@@ -1,0 +1,106 @@
+; 1.5 exe
+(define (p) (p))
+(define (test x y)
+  (if (= x 0)
+      0
+      y))
+(test 0 (p))
+;; returning an endless
+
+;; Explain:
+;; Because of applicative order, that is "the innermost runs the first", when evaluate `(test 0 (p))`, the operand `(p)` will be evaluated before evaluating `test`. However, `p` is defined as a endless loop.
+;; Contrarily, for a normal order interpreter, judegement is taken first. Thus no opportunity would `p` be run.
+;; Really???
+
+;; Another way of doing so is:
+(define (new-p)
+  (define (env) 73))
+(define (new-test x y)
+  (if (= x 0)
+      0
+      y))
+(new-test 0 (new-p))
+(env)
+
+
+; 1.6 exe.
+(define (new-if predicate then-clause else-clause)
+  (cond (predicate then-clause)
+	(else else-clause)))
+(define (new-sqrt-iter guess x)
+  (new-if (good-enough? guess x)
+	  guess
+	  (new-sqrt-iter (improve guess x)
+		     x)))
+;; wherein:
+(define (good-enough? guess x)
+  (< (distance (* guess guess)
+	       x)
+     0.001))
+(define (distance x y)
+  (abs (- x y)))
+(define (improve guess x)
+  (average guess (/ x guess)))
+(define (average x y)
+  (/ (+ x y) 2))
+;; as comparision
+(define (sqrt-iter guess x)
+  (if (good-enough? guess x)
+      guess
+      (sqrt-iter (improve guess x)
+		 x)))
+
+;; run in bigloo
+(new-sqrt-iter 1 2)
+;; returning ERROR
+;;     *** ERROR:bigloo:
+;;     `segmentation violation' exception -- raised
+;;      1. improve, stdin@607
+;;      2. new-sqrt-iter, stdin@235
+;;      ......
+;;      10. new-sqrt-iter, stdin@235
+
+;; Explain:
+;; When calling `new-if` in the first level of recursion of `new-sqrt-iter`, before evaluating it, its operand shall be evaluated first (That is, "the innermost runs the first". C.f. section 1.1.5), **even before evaluating `cond`!** The same will happen in the second level of recursion, wherein the `cond` will not be evaluated too. And so on, and so on. Without making a judgement, never will this recursion stop. This maybe how things go wrong.
+;; Contrarily, `sqrt-iter` runs well, since the judgement is taken **before** calling the recursion.
+
+;; Conclusion:
+;; Bug is hard to be avoided!
+
+
+; 1.7 exe.
+(define (new-good-enough? guess x)
+  (< (relative-distance guess
+			(improve guess x))
+     0.001))
+(define (relative-distance x y)
+  (/ (distance x y)
+     (abs x)))
+(define (nnew-sqrt-iter guess x)
+  (if (new-good-enough? guess x)
+      guess
+      (nnew-sqrt-iter (improve guess x)
+		      x)))
+(nnew-sqrt-iter 1 2)
+(sqrt-iter 1 2)
+;; no improvement?
+
+
+; 1.8 exe.
+(define (improve-cubic guess x)
+  (/ (+ (/ x (* guess guess))
+	(* 2 guess))
+     3))
+(define (good-enough?-cubic guess x)
+  (< (distance (* guess guess guess)
+	       x)
+     0.001))
+(define (sqrt-iter-cubic guess x)
+  (if (good-enough?-cubic guess x)
+      guess
+      (sqrt-iter-cubic (improve-cubic guess x)
+		       x)))
+(sqrt-iter-cubic 1 8)
+
+
+; 1.9 exe.
