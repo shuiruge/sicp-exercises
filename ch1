@@ -104,3 +104,87 @@
 
 
 ; 1.9 exe.
+;; For the first:
+;; 
+;; (+ 4 5)
+;; (inc (+ (dec 4) 5))
+;; (inc (+ 3 5))
+;; (inc (inc (+ (dec 3) 5)))
+;; (inc (inc (+ 2 5)))
+;; (inc (inc (inc (inc (+ (dec 2) 5)))))
+;; (inc (inc (inc (inc (+ 1 5)))))
+;; (inc (inc (inc (inc (inc (+ (dec 1) 5))))))
+;; (inc (inc (inc (inc (inc (+ 0 5))))))
+;; (inc (inc (inc (inc (inc 5)))))
+;; (inc (inc (inc 6)))
+;; (inc (inc 7))
+;; (inc 8)
+;; 9
+;; 
+;; which is manifestly recursive.
+;; And for the second:
+;; 
+;; (+ 4 5)
+;; (+ (dec 4) (inc 5))
+;; (+ 3 6)
+;; (+ (dec 3) (inc 6))
+;; (+ 2 7)
+;; (+ (dec 2) (inc 7))
+;; (+ 1 8)
+;; (+ (dec 1) (inc 8))
+;; (+ 0 9)
+;; 9
+;; 
+;; which is manifestly iterative.
+
+; 1.10 exe.
+; Q1-1:
+;; (A 1 2)
+;; (A 0
+;;   (A 1 1))
+;; (A 0 2)
+;; 4 = 2^2
+;; ......
+;; (A 1 10) returns 2^10
+;; 
+;; Q1-2:
+;; (A 2 4)
+;; (A 1
+;;   (A 2 3))
+;; (A 1
+;;   (A 1 
+;;     (A 2 2)))
+;; (A 1
+;;   (A 1 
+;;     (A 1 
+;;       (A 2 1))))
+;; (A 1
+;;   (A 1 
+;;     (A 1 2)))
+;; (A 1
+;;   (A 1 2^2))
+;; (A 1 2^2^2)
+;; 2^2^2^2
+;;
+;; Q1-3:
+;; (A 3 3)
+;; (A 2
+;;   (A 3 2))
+;; (A 2
+;;   (A 2
+;;     (A 3 1)))
+;; (A 2
+;;   (A 2 2))
+;; (A 2 2^2)
+;; (A 2 4)
+;; 2^2^2^2
+;;
+;; Q2:
+;; f(n) = 2 * n
+;; g(n) = 2 ^ n
+;; h(n) = 2 ^ ... ^ 2, with n 2s.
+
+
+
+
+
