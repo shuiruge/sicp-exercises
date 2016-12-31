@@ -1,4 +1,4 @@
-; 1.5 exe
+; 1.5
 (define (p) (p))
 (define (test x y)
   (if (= x 0)
@@ -23,7 +23,7 @@
 (env)
 
 
-; 1.6 exe.
+; 1.6
 (define (new-if predicate then-clause else-clause)
   (cond (predicate then-clause)
 	(else else-clause)))
@@ -68,7 +68,7 @@
 ;; Bug is hard to be avoided!
 
 
-; 1.7 exe.
+; 1.7
 (define (new-good-enough? guess x)
   (< (relative-distance guess
 			(improve guess x))
@@ -86,7 +86,7 @@
 ;; no improvement?
 
 
-; 1.8 exe.
+; 1.8
 (define (improve-cubic guess x)
   (/ (+ (/ x (* guess guess))
 	(* 2 guess))
@@ -103,7 +103,7 @@
 (sqrt-iter-cubic 1 8)
 
 
-; 1.9 exe.
+; 1.9
 ;; For the first:
 ;; 
 ;; (+ 4 5)
@@ -137,7 +137,7 @@
 ;; 
 ;; which is manifestly iterative.
 
-; 1.10 exe.
+; 1.10
 ; Q1-1:
 ;; (A 1 2)
 ;; (A 0
@@ -184,7 +184,7 @@
 ;; g(n) = 2 ^ n
 ;; h(n) = 2 ^ ... ^ 2, with n 2s.
 
-; 1.11 exe.
+; 1.11
 ;; tree-recursion
 (define (f n)
   (if (< n 3)
@@ -211,7 +211,7 @@
                 f-count-1
                 f-count-2)))
 
-; 1.12 exe.
+; 1.12
 (define (pascal-triangle row column)
   (cond ((> column row) 'empty)
         ((or (= column 1)
@@ -224,6 +224,70 @@
                      (pascal-triangle (- row 1)
                                       column))))))
 
-; 1.13 exe. ???
+; 1.13
+;; A math problem???
 
-; 1.14 exe.
+; 1.14
+;; What is a cent???
+
+; 1.15
+;; Q-a:
+;; log_3(12.5 / 0.1)
+;; Q-b:
+;; Theta of a and Theta of log(a).
+
+; 1.16
+define (fast-expt b n)
+  (fast-expt-iter b n 1))
+(define (fast-expt-iter b n a)
+  (if (= n 0)
+      a
+      (if (even? n)
+          (fast-expt-iter (* b b)
+                          (/ n 2)
+                          a)
+          (fast-expt-iter b
+                          (- n 1)
+                          (* a b)))))
+
+; 1.17
+(define (fast-multiply n b)
+  (fast-multiply-iter n b 0))
+(define (fast-multiply-iter n b product)
+  (if (= n 0)
+      product
+      (if (even? n)
+          (fast-multiply-iter (halve n) (double b) product)
+          (fast-multiply-iter (- n 1) b (+ product b)))))
+;; and for self-consistency:
+(define (halve a)
+  (/ a 2))
+(define (double a)
+  (* a 2))
+
+; 1.18
+;; Isn't this 1.17 again???
+
+; 1.19
+;; (b p + a q) q + (b q + a q + a p) (p + q)
+;; = b p q + a q q + b p q + a p q + a p p + b q q + a q q + a p q
+;; = b (2 p q + q q) + a (2 q q + 2 p q + p p)
+;; = b (2 p q + q q) + a (2 p q + q q) + a (q q + p p)
+;; => q -> 2 p q + q q; p -> q q + p p
+;; thus:
+(define (fib n)
+  (fib-iter 1 0 0 1 n))
+(define (fib-iter a b p q count)
+  (cond ((= count 0) b)
+        ((even? count)
+         (fib-iter a
+                   b
+                   (+ (* q q) (* p p))	      ; compute p'
+                   (+ (* 2 p q) (* q q))      ; compute q'
+                   (/ count 2)))
+        (else (fib-iter (+ (* b q) (* a q) (* a p))
+                        (+ (* b p) (* a q))
+                        p
+                        q
+                        (- count 1)))))
+;; by comparison with the most original version of `fib`, this does be amazingly fast.
