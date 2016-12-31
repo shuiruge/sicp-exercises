@@ -184,7 +184,46 @@
 ;; g(n) = 2 ^ n
 ;; h(n) = 2 ^ ... ^ 2, with n 2s.
 
+; 1.11 exe.
+;; tree-recursion
+(define (f n)
+  (if (< n 3)
+      n
+      (+ (f (- n 1))
+         (* 2
+            (f (- n 2)))
+         (* 3
+            (f (- n 3))))))
 
+;; iteration
+(define (f n)
+  (if (< n 3)
+      n
+      (f-iter n 3 2 1 0)))
+(define (f-iter n count f-count-1 f-count-2 f-count-3)
+  (if (= (- count 1) n)
+        f-count-1
+        (f-iter n
+                (+ count 1)
+                (+ f-count-1
+                   (* 2 f-count-2)
+                   (* 3 f-count-3))
+                f-count-1
+                f-count-2)))
 
+; 1.12 exe.
+(define (pascal-triangle row column)
+  (cond ((> column row) 'empty)
+        ((or (= column 1)
+             (= column row))
+          1)
+        (else (if (= row 1)
+                  1
+                  (+ (pascal-triangle (- row 1)
+                                      (- column 1))
+                     (pascal-triangle (- row 1)
+                                      column))))))
 
+; 1.13 exe. ???
 
+; 1.14 exe.
