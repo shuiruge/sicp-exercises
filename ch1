@@ -269,12 +269,6 @@ define (fast-expt b n)
 ;; Isn't this 1.17 again???
 
 ; 1.19
-;; (b p + a q) q + (b q + a q + a p) (p + q)
-;; = b p q + a q q + b p q + a p q + a p p + b q q + a q q + a p q
-;; = b (2 p q + q q) + a (2 q q + 2 p q + p p)
-;; = b (2 p q + q q) + a (2 p q + q q) + a (q q + p p)
-;; => q -> 2 p q + q q; p -> q q + p p
-;; thus:
 (define (fib n)
   (fib-iter 1 0 0 1 n))
 (define (fib-iter a b p q count)
@@ -291,3 +285,61 @@ define (fast-expt b n)
                         q
                         (- count 1)))))
 ;; by comparison with the most original version of `fib`, this does be amazingly fast.
+
+; 1.20
+;; A possible answer: There's no end since, if "fully expand and then compute" (normal-order), then no part of the argument of `gcd` will be `0` so as to trigger the terminator. So, there will be infinitely many `reminder` for normal-order interpreter.
+;; But this is wrong! The reason is that, when `if` is called, the condition must be exacuted, even in normal-order interpreter! So, there does be an end.
+;; So, the correct answer is, instead, 
+(define (exacuted-reminders-in-normal-order total-steps reminders-in-a reminders-in-b)
+  (define (exacuted-by-if)
+    reminders-in-b)
+  (if (= steps 1)
+      (+ (exacuted-by-if) reminders-in-a)
+      (+ (exacuted-reminders-in-normal-order (- total-steps 1)
+                             reminders-in-b
+                             (+ reminders-in-a reminders-in-b 1))
+          (exacuted-by-if))))
+(exacuted-reminders-in-normal-order 5 0 0)
+;; returns 18.
+;; And applicative-order exacutes
+(define (exacuted-reminders-in-applicative-order total-steps)
+  (define (exacuted-reminders-in-applicative-order-iter total-steps counter) ;no reminders in a and b in applicative-order
+    (if (= total-steps 1)
+        counter
+        (exacuted-reminders-in-applicative-order-iter (- total-steps 1)
+                                                      (+ counter 1))))
+  (exacuted-reminders-in-applicative-order-iter total-steps 0))
+(exacuted-reminders-in-applicative-order 5)
+;; returns 4.
+
+; 1.21
+;; just run it.
+
+; 1.22
+; 1.23
+; 1.24
+;; No `runtime` in Scheme!!!
+
+; 1.25
+;; I cannot understand the `expmod` function defined in the texture!
+
+; 1.26
+;; If you use `(square expr)`, the `expr` will be computed once. But, it were twice if you use `(* expr expr)` instead. This makes a tree recursion, which is Theta of exponential. By exp(ln n) = n, we find it is Theta of n.
+
+; 1.27
+;; No `random` in Scheme.
+
+; 1.28
+(define (Miller-Rabin-test n)
+  (define (try-it a)
+    (if (non-trivial-square-root-of-1-modulo-n? a n)
+        false
+        (= (expmod a (- n 1) n) a)))
+  (try-it (+ 1 (random (- n 1)))))
+(define (non-trivial-square-root-of-1-modulo-n? a n)
+  (cond (or (= a 1)
+            (= a (- n 1)))
+        false
+        (= 1
+           (reminder a n))))
+;; However, we cannot run it to test this code, since no `runtime` in Scheme.
