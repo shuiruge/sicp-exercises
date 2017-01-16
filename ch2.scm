@@ -25,4 +25,49 @@
 ;; => (-1 . 2)
 
 ; 2.2
+(define (midpoint-segment segment)
+  (define (average x y)
+    (/ (+ x y) 2))
+  (let ((start-p (start-point segment))
+        (end-p (end-point segment)))
+      (make-point (average (x-point start-p)
+                           (x-point end-p))
+                  (average (y-point start-p)
+                           (y-point end-p)))))
+(define (print-point p)
+  (display "(")
+  (display (x-point p))
+  (display ",")
+  (display (y-point p))
+  (display ")")
+  (newline))
 
+(define (make-segment start-point end-point)
+  (cons start-point end-point))
+(define (start-point segment)
+  (car segment))
+(define (end-point segment)
+  (cdr segment))
+
+(define (make-point x y)
+  (cons x y))
+(define (x-point point)
+  (car point))
+(define (y-point point)
+  (cdr point))
+;; test
+(define segmt
+  (make-segment (make-point 0 0)
+                (make-point 1 2)))
+(print-point (midpoint-segment segmt))
+
+2.3
+(define (distance point-1 point-2)
+  (sqrt (+ (square (- (x-point point-1)
+                      (x-point point-2)))
+           (square (- (y-point point-1)
+                      (y-point point-2))))))
+(define (square x) (* x x))
+;; test
+(distance (make-point 1 0) (make-point (- 2) 0))
+;???
