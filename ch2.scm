@@ -61,13 +61,17 @@
                 (make-point 1 2)))
 (print-point (midpoint-segment segmt))
 
-2.3
-(define (distance point-1 point-2)
-  (sqrt (+ (square (- (x-point point-1)
-                      (x-point point-2)))
-           (square (- (y-point point-1)
-                      (y-point point-2))))))
-(define (square x) (* x x))
-;; test
-(distance (make-point 1 0) (make-point (- 2) 0))
-;???
+; 2.3
+(define (perimeter rectangle)
+  (* 2 (+ (width rectangle) (height rectangle))))
+(define (area rectangle)
+  (* (width rectangle) (height rectangle)))
+
+(define (make-rectangle width height)
+  (cons width height))
+(define (width rectangle)
+  (car rectangle))
+(define (height rectangle)
+  (cdr rectangle))
+
+; 2.4
